@@ -49,6 +49,7 @@ public class TelaCadastro extends JFrame {
 				try {
 					TelaCadastro frame = new TelaCadastro();
 					frame.setVisible(true);
+					frame.setLocationRelativeTo(null);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -62,15 +63,16 @@ public class TelaCadastro extends JFrame {
 	public TelaCadastro() {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(TelaCadastro.class.getResource("/img/icone32.ico")));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 678, 492);
+		setBounds(100, 100, 551, 358);
 		contentPane = new JPanel();
 		contentPane.setBorder(null);
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
 		JPanel panelCadastro = new JPanel();
-		panelCadastro.setBorder(new LineBorder(Color.LIGHT_GRAY));
-		panelCadastro.setBounds(78, 48, 517, 355);
+		panelCadastro.setBackground(Color.WHITE);
+		panelCadastro.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		panelCadastro.setBounds(10, 36, 517, 231);
 		contentPane.add(panelCadastro);
 		panelCadastro.setLayout(null);
 		
@@ -90,7 +92,7 @@ public class TelaCadastro extends JFrame {
 		panelCadastro.add(lblDataDeNascimento);
 		
 		txtDtNascimento = new JTextField();
-		txtDtNascimento.setBounds(379, 28, 113, 20);
+		txtDtNascimento.setBounds(379, 28, 128, 20);
 		panelCadastro.add(txtDtNascimento);
 		txtDtNascimento.setColumns(10);
 		
@@ -110,11 +112,12 @@ public class TelaCadastro extends JFrame {
 		txtFone.setColumns(10);
 		
 		txtEmail = new JTextField();
-		txtEmail.setBounds(180, 84, 312, 20);
+		txtEmail.setBounds(180, 84, 327, 20);
 		panelCadastro.add(txtEmail);
 		txtEmail.setColumns(10);
 		
 		JPanel panelCPFeRG = new JPanel();
+		panelCPFeRG.setBackground(Color.WHITE);
 		panelCPFeRG.setBorder(new LineBorder(new Color(192, 192, 192)));
 		panelCPFeRG.setBounds(10, 116, 147, 93);
 		panelCadastro.add(panelCPFeRG);
@@ -141,8 +144,9 @@ public class TelaCadastro extends JFrame {
 		txtRG.setColumns(10);
 		
 		JPanel panel = new JPanel();
+		panel.setBackground(Color.WHITE);
 		panel.setBorder(new LineBorder(Color.LIGHT_GRAY));
-		panel.setBounds(167, 116, 324, 93);
+		panel.setBounds(167, 116, 340, 93);
 		panelCadastro.add(panel);
 		panel.setLayout(null);
 		
@@ -201,27 +205,32 @@ public class TelaCadastro extends JFrame {
 		btnEditar.setBackground(SystemColor.menu);
 		btnEditar.setBorder(null);
 		btnEditar.setIcon(new ImageIcon(TelaCadastro.class.getResource("/img/IconBotaoEditar.ico")));
-		btnEditar.setBounds(453, 414, 32, 32);
+		btnEditar.setBounds(411, 278, 32, 32);
 		contentPane.add(btnEditar);
 		
 		JButton btnExcluir = new JButton("");
 		btnExcluir.setBackground(SystemColor.menu);
 		btnExcluir.setBorder(null);
 		btnExcluir.setIcon(new ImageIcon(TelaCadastro.class.getResource("/img/IconBotaoExcluir.ico")));
-		btnExcluir.setBounds(507, 414, 32, 32);
+		btnExcluir.setBounds(453, 278, 32, 32);
 		contentPane.add(btnExcluir);
 		
 		JButton btnSalvar = new JButton("");
 		btnSalvar.setBackground(SystemColor.menu);
 		btnSalvar.setBorder(null);
 		btnSalvar.setIcon(new ImageIcon(TelaCadastro.class.getResource("/img/IconBotaoSalvar.ico")));
-		btnSalvar.setBounds(563, 414, 32, 32);
+		btnSalvar.setBounds(495, 278, 32, 32);
 		contentPane.add(btnSalvar);
 		
 		JLabel lblCadastroDeUsuriaos = new JLabel("Cadastro de Usu\u00E1rios");
 		lblCadastroDeUsuriaos.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		lblCadastroDeUsuriaos.setHorizontalAlignment(SwingConstants.CENTER);
-		lblCadastroDeUsuriaos.setBounds(78, 23, 517, 14);
+		lblCadastroDeUsuriaos.setBounds(21, 11, 517, 14);
 		contentPane.add(lblCadastroDeUsuriaos);
+		
+		JLabel label = new JLabel("");
+		label.setIcon(new ImageIcon(TelaCadastro.class.getResource("/img/fundo2.jpg")));
+		label.setBounds(0, 0, 538, 340);
+		contentPane.add(label);
 	}
 }
