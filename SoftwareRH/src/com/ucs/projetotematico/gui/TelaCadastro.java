@@ -1,38 +1,49 @@
 package com.ucs.projetotematico.gui;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
-import javax.swing.ImageIcon;
-import java.awt.Toolkit;
-import javax.swing.border.TitledBorder;
-import javax.swing.JTextField;
-import java.awt.Font;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.LineBorder;
 import java.awt.Color;
-import javax.swing.border.MatteBorder;
-import javax.swing.border.SoftBevelBorder;
-import javax.swing.JList;
-import javax.swing.JComboBox;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
+import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.SystemColor;
-import javax.swing.SwingConstants;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
-public class TelaCadastro extends JFrame {
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.border.SoftBevelBorder;
+import javax.swing.text.MaskFormatter;
+
+import com.ucs.projetotematico.dao.DAOFactory;
+import com.ucs.projetotematico.dao.UsuarioDAO;
+import com.ucs.projetotematico.dao.postgresql.PostgresqlDAOFactory;
+import com.ucs.projetotematico.model.Usuario;
+
+public class TelaCadastro extends JFrame implements ActionListener {
 
 	private JPanel contentPane, panelCadastro, panelCPFeRG, panelEndereco;
-	private JTextField txtNome, txtDtNascimento, txtFone, txtEmail, txtCPF, txtRG, txtRua, txtBairro, txtCEP, txtCidade, txtCodigo, txtAdmissao;
+	private JTextField txtNome, txtEmail, txtRG, txtRua, txtBairro, txtCEP, txtCidade, txtCodigo;
     private JLabel lblFundo, lblCadastroDeUsuriaos, lblNomeCompleto, lblDataDeNascimento, lblTelefone, lblEmail, lblCPF, lblRg, lblRua, lblBairro, lblCep, lblCidade, lblEstado, lblDataDeAdmissao, lblCodigo;
     private JComboBox comboEstado;
     private JButton btnEditar, btnExcluir, btnSalvar;
+    private JFormattedTextField txtAdmissao, txtDtNascimento, txtFone, txtCPF;
+    private MaskFormatter mascaraAdmissao, mascaraTelefone, mascaraDtNascimento, mascaraCPF = null;
+	private UsuarioDAO dao;
+	private DAOFactory fabrica;	
+	
+
 	/**
 	 * Launch the application.
 	 */
@@ -54,7 +65,12 @@ public class TelaCadastro extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public TelaCadastro() {		
+	public TelaCadastro() throws ParseException {		
+		//Conectando ao Banco de dados
+		fabrica = PostgresqlDAOFactory.getInstancia();
+		dao = fabrica.getUsuarioDAO();
+		
+	
 		
 		setTitle("Cadastro de Usu\u00E1rios");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(TelaCadastro.class.getResource("/img/icone32.ico")));
@@ -96,10 +112,13 @@ public class TelaCadastro extends JFrame {
 		lblDataDeNascimento.setBounds(378, 66, 113, 14);
 		panelCadastro.add(lblDataDeNascimento);
 		
-		txtDtNascimento = new JTextField();
+		// criando mascara para o campo de admissao
+	    mascaraDtNascimento = new MaskFormatter("##/##/####");		  	
+		txtDtNascimento = new JFormattedTextField(mascaraDtNascimento);
+		txtDtNascimento.setText("        /        /            ");
 		txtDtNascimento.setBounds(378, 91, 128, 20);
-		txtDtNascimento.setColumns(10);
 		panelCadastro.add(txtDtNascimento);
+		
 		
 		
 		lblTelefone = new JLabel("Telefone:");
@@ -107,10 +126,15 @@ public class TelaCadastro extends JFrame {
 		lblTelefone.setBounds(10, 122, 70, 14);
 		panelCadastro.add(lblTelefone);
 		
-		txtFone = new JTextField();
+		// criando mascara para o campo de telefone	
+		mascaraTelefone = new MaskFormatter("(##)#####-####");		
+		
+		txtFone = new JFormattedTextField(mascaraTelefone);
+		txtFone.setSelectionStart(1);
+		txtFone.setSelectionEnd(1);
+		txtFone.setText("(  )     -    ");
 		txtFone.setBounds(10, 147, 147, 20);
-		txtFone.setColumns(10);
-		panelCadastro.add(txtFone);	
+		panelCadastro.add(txtFone);
 		
 		
 		lblEmail = new JLabel("Email:");
@@ -137,9 +161,10 @@ public class TelaCadastro extends JFrame {
 		lblCPF.setBounds(5, 5, 46, 14);
 		panelCPFeRG.add(lblCPF);
 		
-		txtCPF = new JTextField();
+		MaskFormatter mascaraCPF = new MaskFormatter("###.###.###-##");
+		txtCPF = new JFormattedTextField(mascaraCPF);
+		txtCPF.setText("      .      .       -    ");
 		txtCPF.setBounds(5, 22, 127, 20);
-		txtCPF.setColumns(10);
 		panelCPFeRG.add(txtCPF);
 		
 		
@@ -223,10 +248,14 @@ public class TelaCadastro extends JFrame {
 		lblDataDeAdmissao.setBounds(204, 10, 95, 14);
 		panelCadastro.add(lblDataDeAdmissao);
 		
-		txtAdmissao = new JTextField();
-		txtAdmissao.setBounds(204, 35, 147, 20);
-		txtAdmissao.setColumns(10);
-		panelCadastro.add(txtAdmissao);
+		
+		// criando mascara para o campo de admissao
+		 mascaraAdmissao = new MaskFormatter("##/##/####");
+		 
+		 txtAdmissao = new JFormattedTextField(mascaraAdmissao);
+		 txtAdmissao.setText("        /        /            ");
+		 txtAdmissao.setBounds(204, 35, 147, 20);
+		 panelCadastro.add(txtAdmissao);
 		
 		
 		lblCodigo = new JLabel("Matricula:");
@@ -237,10 +266,17 @@ public class TelaCadastro extends JFrame {
 		txtCodigo = new JTextField();
 		txtCodigo.setBounds(10, 35, 147, 20);
 		txtCodigo.setColumns(10);
+		txtCodigo.setEnabled(false);
 		panelCadastro.add(txtCodigo);		
-		
+				
 	
 		btnEditar = new JButton("");
+		btnEditar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showConfirmDialog(null, "teste");
+			}
+		});
+		
 		btnEditar.setBackground(SystemColor.menu);
 		btnEditar.setBorder(null);
 		btnEditar.setIcon(new ImageIcon(TelaCadastro.class.getResource("/img/IconBotaoEditar.ico")));
@@ -254,7 +290,37 @@ public class TelaCadastro extends JFrame {
 		btnExcluir.setBounds(453, 318, 32, 32);
 		contentPane.add(btnExcluir);
 		
-		btnSalvar = new JButton("");
+		btnSalvar = new JButton("");		
+		btnSalvar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				Usuario usuario = new Usuario();
+				usuario.setNome(txtNome.getText()); 
+				
+				// para formatar a data em formato brasileiro
+				SimpleDateFormat dataFormatada = new SimpleDateFormat("dd/MM/yyyy");
+				
+				// esse para salvar, o parse converte o campo de scrig para date, 
+				// vai pegar o formato brasileiro  e converter para o estrangeiro
+				try {	
+					usuario.setData_admissao(dataFormatada.parse(txtAdmissao.getText()));					
+				} catch (ParseException e1) {
+					JOptionPane.showConfirmDialog(null, "Data Incorreta!" + e1);
+				}
+				
+				try { 
+					usuario.setData_nascimento(dataFormatada.parse(txtDtNascimento.getText()));
+				} catch (ParseException e1) {
+					JOptionPane.showConfirmDialog(null, "Data Incorreta!" + e1);
+				}
+				usuario.setTelefone(txtFone.getText());
+				usuario.setEmail(txtEmail.getText());
+				usuario.setCpf(txtCPF.getText());
+				usuario.setRg(txtRG.getText());					
+				dao.salvar(usuario);	
+				
+			}
+		});
 		btnSalvar.setBackground(SystemColor.menu);
 		btnSalvar.setBorder(null);
 		btnSalvar.setIcon(new ImageIcon(TelaCadastro.class.getResource("/img/IconBotaoSalvar.ico")));
@@ -268,4 +334,21 @@ public class TelaCadastro extends JFrame {
 		
 		
 	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 }
+	
+	
+	
+	
+		
+		
+		
+	
+	
+

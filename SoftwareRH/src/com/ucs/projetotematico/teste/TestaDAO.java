@@ -17,7 +17,8 @@ public class TestaDAO {
 		// --
 		UsuarioDAO usuarioDAO = fabrica.getUsuarioDAO();
 		
-		List<Usuario> usuarios = usuarioDAO.buscaTodos();
+		List<Usuario> usuarios = usuarioDAO.buscaTodos(null);
+		
 		
 		for (Usuario u : usuarios) {
 			System.out.println(u);

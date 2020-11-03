@@ -1,7 +1,12 @@
 package com.ucs.projetotematico.dao.postgresql;
 
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+
+import javax.swing.JOptionPane;
 
 import com.ucs.projetotematico.dao.DAOFactory;
 import com.ucs.projetotematico.dao.UsuarioDAO;
@@ -21,6 +26,7 @@ public class PostgresqlDAOFactory extends DAOFactory {
 	}
 	
 	
+	
 
    private void openConnection () {
 	  	   
@@ -33,12 +39,23 @@ public class PostgresqlDAOFactory extends DAOFactory {
 		Class.forName(driver); // instancia o driver
 		this.conn = DriverManager.getConnection(url, user, senha); 
 		}catch (ClassNotFoundException cnfe) {
-			System.out.println("Diver n√£o encontrado");
+			System.out.println("Diver n√o encontrado");
 		}catch (SQLException se) {
-			System.out.println("Falha na conex√£o" + se.getMessage());
+			System.out.println("Falha na conex„o" + se.getMessage());
 		}
 				
    }
+   
+ /*  public void executaSql(String sql){
+	   //Statement stmt = null;
+	   try {
+	   ResultSet rs = null;	
+	   Statement stmt = conn.createStatement(rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY); // Difere a pesquisa de maiucula/minuscula,e rs rolavel que deixa setar tanto o primeiro quanto o ultimo registro do banco
+       rs = stmt.executeQuery(sql);
+	   } catch (SQLException ex) {
+		   JOptionPane.showConfirmDialog(null, "Erro em executaSql!" + ex.getMessage());
+	   }
+   }*/
 
 	
 	// fecha a conex√£o com o Banco

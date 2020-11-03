@@ -12,22 +12,7 @@ public class Usuario implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
-	/*
-	 *             
-					u.setStatus(rs.getBoolean("tip_status"));
-					u.setCPF(rs.getInt("num_cpf"));
-					u.setRG(rs.getInt("num_rg"));
-					u.setData(rs.getDate("dta_nascimento"));					
-					u.setEndereco(rs.getInt("id_endereco"));
-					u.setTelefone(rs.getString("num_telefone"));
-					u.setEmail(rs.getString("des_email"));
-					u.setNatural(rs.getString("des_naturalidade"));
-					u.setNacionalidade(rs.getString("des_nacionalidade"));
-					u.setEstCivil(rs.getCharacterStream("tip_estado_civil"));
-					u.setPai(rs.getString("des_pai"));
-					u.setMae(rs.getString("des_mae"));
-					u.setSenha(rs.getString("des_senha"));	
-	 */
+	 
 	private int id_empresa;
 	private int id_usuario;
 	private String nome;
@@ -35,16 +20,12 @@ public class Usuario implements Serializable{
 	private String cpf;
 	private String rg;
 	private Date data_nascimento;
-	private int endereco;
+	private Endereco endereco;
 	private String telefone;
 	private String email;
 	private String natural;
 	private Date data_admissao;
-	//private String nacionalidade;
-	//private char estCivil;
-	//private String pai;
-	//private String mae;
-	//private String senha;	
+	private String pesquisa;
 	
 	
 	public Usuario(){}
@@ -60,7 +41,7 @@ public class Usuario implements Serializable{
 		this.cpf = cpf;
 		this.rg = rg;
 		this.data_nascimento = data_nascimento;
-		this.endereco = endereco;
+		//this.endereco = endereco;
 		this.telefone = telefone;
 		this.email = email;
 		this.natural = natural;
@@ -143,16 +124,17 @@ public class Usuario implements Serializable{
 
 	public void setData_nascimento(Date data_nascimento) {
 		this.data_nascimento = data_nascimento;
+	
 	}
 
 	
-	public int getEndereco() {
+	public Endereco getEndereco() {
 		return endereco;
 	}
 
 
 
-	public void setEndereco(int endereco) {
+	public void setEndereco(Endereco endereco) {
 		this.endereco = endereco;
 	}
 
@@ -190,9 +172,7 @@ public class Usuario implements Serializable{
 
 	public void setNatural(String natural) {
 		this.natural = natural;
-	}
-
-	
+	}	
 	
 
 	public Date getData_admissao() {
@@ -201,6 +181,14 @@ public class Usuario implements Serializable{
 
 	public void setData_admissao(Date data_admissao) {
 		this.data_admissao = data_admissao;
+	}
+
+	public String getPesquisa() {
+		return pesquisa;
+	}
+
+	public void setPesquisa(String pesquisa) {
+		this.pesquisa = pesquisa;
 	}
 
 	@Override
@@ -220,7 +208,7 @@ public class Usuario implements Serializable{
 		result = prime * result + ((data_nascimento == null) ? 0 : data_nascimento.hashCode());
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result + id_empresa;
-		result = prime * result + endereco;
+		//result = prime * result + endereco;
 		result = prime * result + ((natural == null) ? 0 : natural.hashCode());
 		result = prime * result + ((nome == null) ? 0 : nome.hashCode());
 		result = prime * result + ((rg == null) ? 0 : rg.hashCode());

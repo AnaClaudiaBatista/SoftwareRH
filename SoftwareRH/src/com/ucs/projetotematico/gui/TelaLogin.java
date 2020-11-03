@@ -22,6 +22,8 @@ import com.ucs.projetotematico.dao.DAOFactory;
 import com.ucs.projetotematico.dao.UsuarioDAO;
 import com.ucs.projetotematico.dao.postgresql.PostgresqlDAOFactory;
 import com.ucs.projetotematico.model.Usuario;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class TelaLogin extends JFrame {
 
@@ -33,9 +35,7 @@ public class TelaLogin extends JFrame {
 	private UsuarioDAO dao;
 	private DAOFactory fabrica;	
 
-	/**
-	 * Launch the application.
-	 */
+
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -58,6 +58,11 @@ public class TelaLogin extends JFrame {
 	
 	
 	public TelaLogin() {
+		
+		//Conectando ao Banco de dados
+		fabrica = PostgresqlDAOFactory.getInstancia();
+		dao = fabrica.getUsuarioDAO();
+		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(TelaLogin.class.getResource("/img/icone32.ico")));
 		setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -83,6 +88,15 @@ public class TelaLogin extends JFrame {
 		
 		
 		txtSenha = new JPasswordField();		
+		txtSenha.addKeyListener(new KeyAdapter() {			
+			public void keyPressed(KeyEvent e) {
+				 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					// adicionando o click do botao para etrar apenas clicando em Enter
+					 btnAcessar.doClick(); 
+				 }
+					 
+			}
+		});
 		txtSenha.setBounds(147, 175, 137, 20);
 		contentPane.add(txtSenha);
 		
@@ -137,8 +151,6 @@ public class TelaLogin extends JFrame {
 		
 		
 		
-		//Conectando ao Banco de dados
-				fabrica = PostgresqlDAOFactory.getInstancia();
-				dao = fabrica.getUsuarioDAO();
+		
 	}
 }

@@ -1,18 +1,22 @@
 package com.ucs.projetotematico.gui;
 
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Date;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
@@ -20,9 +24,6 @@ import com.ucs.projetotematico.dao.DAOFactory;
 import com.ucs.projetotematico.dao.UsuarioDAO;
 import com.ucs.projetotematico.dao.postgresql.PostgresqlDAOFactory;
 import com.ucs.projetotematico.model.Usuario;
-import javax.swing.SwingConstants;
-import java.awt.Font;
-import javax.swing.ImageIcon;
 
 public class TelaUsuariosCad extends JFrame {
 
@@ -175,22 +176,25 @@ public class TelaUsuariosCad extends JFrame {
 		contentPane.add(btnPesquisar);
 		
 		btnPesquisar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {				
-				/*String sId_usuario = txtCodigo.getText();
-				try {
-					int id_usuario = Integer.parseInt(sId_usuario);
-					Usuario u = dao.buscaPorCodigo(id_usuario);
-					
-					if (u != null) {
-					txtCodigo.setText(new Integer(u.getId_usuario()).toString());
-					txtNome.setText(u.getNome());
-										//txtAdmissao.setText(u.getData_admissao())
-					txtCPF.setText(new Integer(u.getCpf()).toString());					
-					}
-					
-				} catch (NumberFormatException nfe) {	
-					System.out.println("Código Inválido");
-				}*/
+			public void actionPerformed(ActionEvent e) {	
+				SimpleDateFormat dataFormatada = new SimpleDateFormat("dd/MM/yyyy");
+				
+				Usuario usuario = new Usuario();
+				usuario.setPesquisa(txtPesquisa.getText());
+				dao.buscaTodos(usuario);
+				txtCodigo.setText(String.valueOf(usuario.getId_usuario()));
+				txtNome.setText(usuario.getNome());						
+				txtAdmissao.setText(dataFormatada.format(usuario.getData_admissao()));
+				txtCPF.setText(String.valueOf(usuario.getCpf()));
+				txtRua.setText(usuario.getEndereco().getDes_bairro());
+				txtNumero.setText(String.valueOf(usuario.getEndereco().getNumero()));
+				txtBairro.setText(usuario.getEndereco().getDes_bairro());
+				
+				
+				//usuario.setData_admissao(dataFormatada.parse(txtAdmissao.getText()));					
+
+				
+				
 			}
 		});
 		
@@ -201,18 +205,25 @@ public class TelaUsuariosCad extends JFrame {
 			
 		
 		btnNovo = new JButton("Novo");
+		btnNovo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				TelaCadastro cadastro;
+				try {
+					cadastro = new TelaCadastro();
+					cadastro.setLocationRelativeTo(null);
+					cadastro.setVisible(true);
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+			}
+		});
 		btnNovo.setFont(new Font("Arial", Font.PLAIN, 10));
 		btnNovo.setBounds(490, 10, 80, 23);
 		contentPane.add(btnNovo);
 		
-		btnNovo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				TelaCadastro cadastro = new TelaCadastro();
-				cadastro.setLocationRelativeTo(null);
-				cadastro.setVisible(true);
-			}
-		});
-				
+		
 		
 		lblFundo = new JLabel("");
 		lblFundo.setIcon(new ImageIcon(TelaUsuariosCad.class.getResource("/img/fundo2.jpg")));

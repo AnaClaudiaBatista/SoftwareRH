@@ -9,11 +9,17 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import com.ucs.projetotematico.dao.UsuarioDAO;
+import com.ucs.projetotematico.model.Endereco;
 import com.ucs.projetotematico.model.Usuario;
 
 public class PostgresqlUsuarioDAO implements UsuarioDAO {
+	// SimpleDateFormat formatarData = new SimpleDateFormat("yyyy-MM-dd");
 	
+	/*Usuario conex = new Usuario();	
+	TelaUsuarioCad usuario = new TelaUsuarioCad();*/
 	private Connection conn;
 	
 	public PostgresqlUsuarioDAO (Connection conn) { // recebe a conexão e manipula ela por aqui
@@ -22,47 +28,44 @@ public class PostgresqlUsuarioDAO implements UsuarioDAO {
 
 	@Override
 	// metodo que consulta e lista os produtos do banco
-		public List<Usuario> buscaTodos() { // criar um statment e buscar um dado		
+		public List<Usuario> buscaTodos(Usuario usuario) { // criar um statment e buscar um dado		
 			
 			
 			 Statement stmt = null;
 			 ResultSet rs = null;
-			 List<Usuario> usuarios = new ArrayList<Usuario>();
+	//		 List<Usuario> usuarios = new ArrayList<Usuario>();
 	           
-			 try {
+	try {		
 				
-				stmt = conn.createStatement(); // cria comando que manda informacao para o banco
-				
-				/*rs = stmt.executeQuery("select  id_empresa,id_usuario, des_nome,tip_status, num_cpf, num_rg,dta_nascimento,"
-						+ "id_endereco,num_telefone, des_email,des_naturalidade, des_nacionalidade,"
-						+ "tip_estado_civil, des_pai, des_mae, des_senha from baseusuario order by id_usuario");*/ 
-				
-				rs = stmt.executeQuery("select * from baseusuario order by id_usuario");// rs recebe o resultado do select
-
+	stmt = conn.createStatement(rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY); // cria comando que manda informacao para o banco							
+	rs = stmt.executeQuery("select baseusuario.id_usuario, baseusuario.des_nome, baseusuario.dta_admissao,baseusuario.num_cpf,"
+						+ "endereco.des_rua, endereco.numero, endereco.des_bairro  "
+						+ "from baseusuario left join endereco on endereco.id_endereco = baseusuario.id_endereco "
+						+ "where baseusuario.des_nome like '%" + usuario.getPesquisa()+"%'");// rs recebe o resultado do select
+				//	rs.first();
+	List<Usuario> listaUsuario = new ArrayList<>();
+	
+	
 				while (rs.next()) { // laco pega as informacoes da tabela baseusuario e adiciona no array usuario
-					Usuario u = new Usuario(); 
-					u.setId_empresa(rs.getInt("id_empresa"));					
-					u.setId_usuario(rs.getInt("id_usuario"));
-					u.setNome(rs.getString("des_nome"));
-					u.setStatus(rs.getBoolean("tip_status"));
-					u.setCpf(rs.getString("num_cpf"));
-					u.setRg(rs.getString("num_rg"));
-					u.setData_nascimento(rs.getDate("dta_nascimento"));					
-					u.setEndereco(rs.getInt("id_endereco"));
-					u.setTelefone(rs.getString("num_telefone"));
-					u.setEmail(rs.getString("des_email"));
-					u.setNatural(rs.getString("des_naturalidade"));
-					u.setData_admissao(rs.getDate("data_admissao"));
-					/*u.setNacionalidade(rs.getString("des_nacionalidade"));
-					u.setEstCivil(rs.getCharacterStream("tip_estado_civil"));
-					u.setPai(rs.getString("des_pai"));
-					u.setMae(rs.getString("des_mae"));
-					u.setSenha(rs.getString("des_senha"));	*/
-					usuarios.add(u);							
+					Usuario usuarios = new Usuario(); 				
+					usuarios.setId_usuario(rs.getInt("id_usuario"));
+					usuarios.setNome(rs.getString("des_nome"));
+					usuarios.setData_admissao(rs.getDate("data_admissao"));
+					usuarios.setCpf(rs.getString("num_cpf"));
+					
+					Endereco endereco = new Endereco();
+					endereco.setDes_rua(rs.getString("des_rua"));
+					endereco.setNumero(rs.getInt("numero"));
+					endereco.setDes_bairro(rs.getString("des_bairro"));
+					
+					usuarios.setEndereco(endereco);
+					listaUsuario.add(usuarios);
+													
 				}		
 			} 
 			catch (SQLException se) {
-				System.out.println("Ocorreu um erro : " + se.getMessage());			
+				JOptionPane.showMessageDialog(null,"Ocorreu um erro ao listar os dados: " + se.getMessage());
+
 			} 
 			 finally {
 				try {
@@ -73,8 +76,12 @@ public class PostgresqlUsuarioDAO implements UsuarioDAO {
 					System.out.println(e.getMessage());
 				}
 			}
-			 return usuarios;
+			// return usuario;
+			return null;
 		}
+	
+	
+	
 
 	//metodo que busca por determinado UsuarioID
 	public Usuario buscaPorCodigo(int usuarioID) {
@@ -95,7 +102,7 @@ public class PostgresqlUsuarioDAO implements UsuarioDAO {
 			if (rs.next()) { 
 				usuario = new Usuario(); 
 				usuario.setId_usuario(rs.getInt("id_usuario"));
-				usuario.setNome(rs.getString("des_nome"));
+				usuario.setNome(rs.getString("des_nome"));	
 				//usuario.setData_admissao(rs.getDate("data_admissao"));
 				usuario.setCpf(rs.getString("num_cpf"));
 			}		
@@ -115,27 +122,32 @@ public class PostgresqlUsuarioDAO implements UsuarioDAO {
 		 return usuario;		
 	}
 
-	// método que insere no banco
- public void inserir(Usuario usuario) {
+	// método que insere no banco CERTO
+ public void salvar(Usuario usuario) {
 		
 		if (usuario == null) { // condicao para seguranca, se o usuario tentar apagar algo nulo nao dar Exception
 			return;
 		}
 		
 		PreparedStatement pstmt = null; 
+		
 		try {
-			pstmt = conn.prepareStatement("insert into baseusuario (id_usuario, des_nome, data_admissao, num_cpf) values (?,?,?,?)");
-			
-			pstmt.setInt(1, usuario.getId_usuario());
-			pstmt.setString(2, usuario.getNome());
-			pstmt.setDate(3, (Date)usuario.getData_admissao());
-			pstmt.setString(4, usuario.getCpf());
-			
+			//SimpleDateFormat data = new SimpleDateFormat("yyyy-MM-dd");
+			pstmt = conn.prepareStatement("insert into baseusuario (des_nome, dta_admissao, dta_nascimento, num_telefone, des_email, num_cpf, num_rg) values (?,?,?,?,?,?,?)");			
+				        
+			pstmt.setString(1, usuario.getNome());
+			pstmt.setDate(2, new Date(usuario.getData_admissao().getDate()));			
+			pstmt.setDate(3, new Date(usuario.getData_nascimento().getDate()));
+			pstmt.setString(4, usuario.getTelefone());
+			pstmt.setString(5, usuario.getEmail());
+			pstmt.setString(6, usuario.getCpf());
+			pstmt.setString(7, usuario.getRg());			
 			pstmt.executeUpdate();
+			JOptionPane.showMessageDialog(null, "Dados Inseridos com Sucesso!");
 			
 			
 		}catch (SQLException se) {
-			System.out.println("Ocorreu um erro : " + se.getMessage());
+			JOptionPane.showMessageDialog(null,"Ocorreu um erro ao inserir os dados: " + se.getMessage());
 			
 		} 
 		 finally {
@@ -214,6 +226,8 @@ public void alterar(Usuario usuario) {
 	
 	
 }
+
+
 	
 
 }

@@ -6,6 +6,11 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import com.ucs.projetotematico.dao.DAOFactory;
+import com.ucs.projetotematico.dao.UsuarioDAO;
+import com.ucs.projetotematico.dao.postgresql.PostgresqlDAOFactory;
+
 import java.awt.Toolkit;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
@@ -15,14 +20,19 @@ import javax.swing.JButton;
 import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 public class TelaInicial extends JFrame {
 
 	private JPanel contentPane;
-	JMenuBar menuBar;
-	JMenu mnCadastros,mnRelatrios, mnPonto;	
-	JButton btnRelatorio, btnUsuario, btnRegistrarPonto;
-	JLabel lblFundo;
+	private JMenuBar menuBar;
+	private JMenu mnCadastros,mnRelatrios, mnPonto, mnSair;	
+	private JMenuItem mntmSair;
+	private JButton btnRelatorio, btnUsuario, btnRegistrarPonto;
+	private JLabel lblFundo;
+	private UsuarioDAO dao;
+	private DAOFactory fabrica;	
 	
 	/**
 	 * Launch the application.
@@ -45,6 +55,10 @@ public class TelaInicial extends JFrame {
 	 * Create the frame.
 	 */
 	public TelaInicial() {
+		//Conectando ao Banco de dados
+		fabrica = PostgresqlDAOFactory.getInstancia();
+		dao = fabrica.getUsuarioDAO();
+		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(TelaInicial.class.getResource("/img/icone32.ico")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 598, 367);
@@ -60,6 +74,21 @@ public class TelaInicial extends JFrame {
 		
 		mnPonto = new JMenu("Ponto");
 		menuBar.add(mnPonto);
+		
+		mnSair = new JMenu("Sair do Sistema");	
+		menuBar.add(mnSair);
+		
+		mntmSair = new JMenuItem("Sair");
+		mntmSair.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//CAIXA DE DIALOGO CONFIRMANDO SE O USUARIO DESEJA SAIR DO SISTEMA
+				int sair = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja sair? ", "Atenção", JOptionPane.YES_NO_OPTION);
+				if (sair == JOptionPane.YES_OPTION) {
+				fabrica.closeConnection();
+				System.exit(0);
+			}}
+		});
+		mnSair.add(mntmSair);
 		
 		
 		contentPane = new JPanel();
