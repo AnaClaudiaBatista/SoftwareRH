@@ -5,37 +5,43 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Date;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import com.ucs.projetotematico.dao.DAOFactory;
 import com.ucs.projetotematico.dao.UsuarioDAO;
 import com.ucs.projetotematico.dao.postgresql.PostgresqlDAOFactory;
 import com.ucs.projetotematico.model.Usuario;
+import javax.swing.table.DefaultTableModel;
 
-public class TelaUsuariosCad extends JFrame {
+
+public class TelaListaUsuarios extends JFrame {
 
 	private JPanel contentPane;
-	private JTable table;
 	private JTextField txtNome, txtAdmissao, txtCPF, txtRua, txtNumero, txtBairro, txtCodigo;
 	
-	private JButton btnNovo, btnPesquisar;
-	private JTextField txtPesquisa;
+	private JButton btnNovo, btnBuscarTodos;
 	private JLabel lblCodigo, lblFundo, lblNome, lblAdmissao, lblCpf, lblLogradouro,lblNumero, lblBairro;
+	protected JTable tabelaUsuarios;
+	private JScrollPane scroll;
 	private UsuarioDAO dao;
 	private DAOFactory fabrica;
+	
 
 	/**
 	 * Launch the application.
@@ -45,7 +51,7 @@ public class TelaUsuariosCad extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					TelaUsuariosCad frame = new TelaUsuariosCad();	
+					TelaListaUsuarios frame = new TelaListaUsuarios();	
 					frame.setLocationRelativeTo(null);
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -58,8 +64,8 @@ public class TelaUsuariosCad extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public TelaUsuariosCad() {
-		setIconImage(Toolkit.getDefaultToolkit().getImage(TelaUsuariosCad.class.getResource("/img/icone32.ico")));
+	public TelaListaUsuarios() {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(TelaListaUsuarios.class.getResource("/img/icone32.ico")));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 598, 403);
 		contentPane = new JPanel();
@@ -67,33 +73,40 @@ public class TelaUsuariosCad extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		table = new JTable();
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-				{null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null},
-			},
-			new String[] {
-				"Codigo", "Nome", "Admissao", "CPF", "Logradouro", "Numero", "Bairro"
-			}
-		));
-		table.setBounds(10, 85, 560, 268);
-		contentPane.add(table);
+		tabelaUsuarios = new JTable(new UsuarioTableModel());
+		tabelaUsuarios.getSelectionModel().addListSelectionListener(
+				new ListSelectionListener() {
+					@Override
+					public void valueChanged(ListSelectionEvent e) {
+						if (e.getValueIsAdjusting()) {
+			                return;
+			            }
+						UsuarioTableModel usuarioTableModel = (UsuarioTableModel) tabelaUsuarios
+								.getModel();
+						Usuario usuario = usuarioTableModel.getUsuarios().get(
+								e.getLastIndex());
+						System.out.println(usuario);
+//						
+					}
+				});
+		
+		tabelaUsuarios.setBounds(10, 47, 560, 290);
+		contentPane.add(tabelaUsuarios);
+		
+		scroll = new JScrollPane();
+		scroll.setBounds(558, 47, 12, 290);
+		contentPane.add(scroll);
+		
 		
 		lblCodigo = new JLabel("C\u00F3digo");
 		lblCodigo.setFont(new Font("Arial", Font.PLAIN, 10));
 		lblCodigo.setHorizontalAlignment(SwingConstants.CENTER);
-		lblCodigo.setBounds(10, 48, 80, 14);
+		lblCodigo.setBounds(10, 11, 80, 14);
 		contentPane.add(lblCodigo);
 		
 		txtCodigo = new JTextField();
-		txtCodigo.setBounds(10, 63, 80, 20);
+		txtCodigo.setBorder(null);
+		txtCodigo.setBounds(10, 24, 80, 20);
 		txtCodigo.setColumns(10);
 		contentPane.add(txtCodigo);
 		
@@ -102,10 +115,11 @@ public class TelaUsuariosCad extends JFrame {
 		lblNome.setFont(new Font("Arial", Font.PLAIN, 10));
 		lblNome.setHorizontalAlignment(SwingConstants.CENTER);
 		contentPane.add(lblNome);
-		lblNome.setBounds(90, 48, 80, 14);		
+		lblNome.setBounds(90, 11, 80, 14);		
 		
 		txtNome = new JTextField();
-		txtNome.setBounds(90, 63, 80, 20);
+		txtNome.setBorder(null);
+		txtNome.setBounds(90, 24, 80, 20);
 		txtNome.setColumns(10);
 		contentPane.add(txtNome);
 		
@@ -113,11 +127,12 @@ public class TelaUsuariosCad extends JFrame {
 		lblAdmissao = new JLabel("Admiss\u00E3o");
 		lblAdmissao.setFont(new Font("Arial", Font.PLAIN, 10));
 		lblAdmissao.setHorizontalAlignment(SwingConstants.CENTER);
-		lblAdmissao.setBounds(170, 48, 80, 14);
+		lblAdmissao.setBounds(170, 11, 80, 14);
 		contentPane.add(lblAdmissao);
 		
 		txtAdmissao = new JTextField();
-		txtAdmissao.setBounds(170, 63, 80, 20);
+		txtAdmissao.setBorder(null);
+		txtAdmissao.setBounds(170, 24, 80, 20);
 		txtAdmissao.setColumns(10);
 		contentPane.add(txtAdmissao);
 		
@@ -125,11 +140,12 @@ public class TelaUsuariosCad extends JFrame {
 		lblCpf = new JLabel("CPF");
 		lblCpf.setFont(new Font("Arial", Font.PLAIN, 10));
 		lblCpf.setHorizontalAlignment(SwingConstants.CENTER);
-		lblCpf.setBounds(250, 48, 80, 14);
+		lblCpf.setBounds(250, 11, 80, 14);
 		contentPane.add(lblCpf);
 
 		txtCPF = new JTextField();
-		txtCPF.setBounds(250, 63, 80, 20);
+		txtCPF.setBorder(null);
+		txtCPF.setBounds(250, 24, 80, 20);
 		txtCPF.setColumns(10);
 		contentPane.add(txtCPF);
 		
@@ -137,11 +153,12 @@ public class TelaUsuariosCad extends JFrame {
 		lblLogradouro = new JLabel("Logradouro");
 		lblLogradouro.setFont(new Font("Arial", Font.PLAIN, 10));
 		lblLogradouro.setHorizontalAlignment(SwingConstants.CENTER);
-		lblLogradouro.setBounds(330, 48, 80, 14);
+		lblLogradouro.setBounds(330, 11, 80, 14);
 		contentPane.add(lblLogradouro);
 		
 		txtRua = new JTextField();
-		txtRua.setBounds(330, 63, 80, 20);
+		txtRua.setBorder(null);
+		txtRua.setBounds(330, 24, 80, 20);
 		txtRua.setColumns(10);
 		contentPane.add(txtRua);		
 		
@@ -149,11 +166,12 @@ public class TelaUsuariosCad extends JFrame {
 		lblNumero = new JLabel("N\u00FAmero");
 		lblNumero.setFont(new Font("Arial", Font.PLAIN, 10));
 		lblNumero.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNumero.setBounds(410, 48, 80, 14);
+		lblNumero.setBounds(410, 11, 80, 14);
 		contentPane.add(lblNumero);
 		
 		txtNumero = new JTextField();
-		txtNumero.setBounds(410, 63, 80, 20);
+		txtNumero.setBorder(null);
+		txtNumero.setBounds(410, 24, 80, 20);
 		txtNumero.setColumns(10);
 		contentPane.add(txtNumero);		
 		
@@ -161,47 +179,58 @@ public class TelaUsuariosCad extends JFrame {
 		lblBairro = new JLabel("Bairro");
 		lblBairro.setFont(new Font("Arial", Font.PLAIN, 10));
 		lblBairro.setHorizontalAlignment(SwingConstants.CENTER);
-		lblBairro.setBounds(490, 48, 80, 14);
+		lblBairro.setBounds(490, 11, 80, 14);
 		contentPane.add(lblBairro);
 		
 		txtBairro = new JTextField();
-		txtBairro.setBounds(490, 63, 80, 20);
+		txtBairro.setBorder(null);
+		txtBairro.setBounds(490, 24, 80, 20);
 		txtBairro.setColumns(10);
 		contentPane.add(txtBairro);
 					
 				
-		btnPesquisar = new JButton("Pesquisar");
-		btnPesquisar.setFont(new Font("Arial", Font.PLAIN, 10));
-		btnPesquisar.setBounds(90, 3, 80, 23);
-		contentPane.add(btnPesquisar);
-		
-		btnPesquisar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {	
-				SimpleDateFormat dataFormatada = new SimpleDateFormat("dd/MM/yyyy");
+		btnBuscarTodos = new JButton("Buscar Todos");		
+		btnBuscarTodos.addActionListener(new ActionListener() {			
+			public void actionPerformed(ActionEvent e) {		
+				
+				UsuarioDAO usuarioDAO = fabrica.getUsuarioDAO();
+				List<Usuario> usuarios = new ArrayList<Usuario>();
+				
+				usuarios = usuarioDAO.buscaTodos();
+				
+				UsuarioTableModel usuarioTableModel = new UsuarioTableModel();
+				usuarioTableModel.setUsuarios(usuarios);
+
+				tabelaUsuarios.setModel(usuarioTableModel);
+
+
+				
+				/*SimpleDateFormat dataFormatada = new SimpleDateFormat("dd/MM/yyyy");
 				
 				Usuario usuario = new Usuario();
 				usuario.setPesquisa(txtPesquisa.getText());
+				
 				dao.buscaTodos(usuario);
+				
 				txtCodigo.setText(String.valueOf(usuario.getId_usuario()));
+				//txtCodigo.setText(new Integer(usuario.getId_usuario()).toString());
 				txtNome.setText(usuario.getNome());						
-				txtAdmissao.setText(dataFormatada.format(usuario.getData_admissao()));
+				//txtAdmissao.setText(dataFormatada.format(usuario.getData_admissao()));
 				txtCPF.setText(String.valueOf(usuario.getCpf()));
 				txtRua.setText(usuario.getEndereco().getDes_bairro());
 				txtNumero.setText(String.valueOf(usuario.getEndereco().getNumero()));
 				txtBairro.setText(usuario.getEndereco().getDes_bairro());
 				
-				
+				*/
 				//usuario.setData_admissao(dataFormatada.parse(txtAdmissao.getText()));					
 
 				
 				
 			}
 		});
-		
-		txtPesquisa = new JTextField();
-		txtPesquisa.setBounds(10, 4, 80, 23);
-		txtPesquisa.setColumns(10);
-		contentPane.add(txtPesquisa);
+		btnBuscarTodos.setFont(new Font("Arial", Font.PLAIN, 10));
+		btnBuscarTodos.setBounds(180, 339, 127, 23);
+		contentPane.add(btnBuscarTodos);
 			
 		
 		btnNovo = new JButton("Novo");
@@ -220,18 +249,23 @@ public class TelaUsuariosCad extends JFrame {
 			}
 		});
 		btnNovo.setFont(new Font("Arial", Font.PLAIN, 10));
-		btnNovo.setBounds(490, 10, 80, 23);
+		btnNovo.setBounds(317, 339, 80, 23);
 		contentPane.add(btnNovo);
 		
 		
 		
 		lblFundo = new JLabel("");
-		lblFundo.setIcon(new ImageIcon(TelaUsuariosCad.class.getResource("/img/fundo2.jpg")));
+		lblFundo.setIcon(new ImageIcon(TelaListaUsuarios.class.getResource("/img/fundo2.jpg")));
 		lblFundo.setBounds(0, 0, 582, 374);
 		contentPane.add(lblFundo);
+		
+		
+		
 		
 		//Conectando ao Banco de dados
 		fabrica = PostgresqlDAOFactory.getInstancia();
 		dao = fabrica.getUsuarioDAO();
+		
+		
 	}
 }

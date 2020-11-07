@@ -1,9 +1,20 @@
 package com.ucs.projetotematico.gui;
 
-import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.ParseException;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -11,25 +22,13 @@ import com.ucs.projetotematico.dao.DAOFactory;
 import com.ucs.projetotematico.dao.UsuarioDAO;
 import com.ucs.projetotematico.dao.postgresql.PostgresqlDAOFactory;
 
-import java.awt.Toolkit;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JLabel;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import java.awt.Color;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-
 public class TelaInicial extends JFrame {
 
 	private JPanel contentPane;
 	private JMenuBar menuBar;
 	private JMenu mnCadastros,mnRelatrios, mnPonto, mnSair;	
 	private JMenuItem mntmSair;
-	private JButton btnRelatorio, btnUsuario, btnRegistrarPonto;
+	private JButton btnRelatorio, btnCadastraUsuarios, btnRegistrarPonto;
 	private JLabel lblFundo;
 	private UsuarioDAO dao;
 	private DAOFactory fabrica;	
@@ -105,38 +104,46 @@ public class TelaInicial extends JFrame {
 		btnRelatorio.setBounds(84, 11, 64, 64);
 		contentPane.add(btnRelatorio);
 		
-		
-		btnUsuario = new JButton("");		
-		btnUsuario.setBorder(null);
-		btnUsuario.setToolTipText("Cadastro de Funcion\u00E1rios");
-		btnUsuario.setBackground(Color.WHITE);
-		btnUsuario.setIcon(new ImageIcon(TelaInicial.class.getResource("/img/adicionar-usuario.png")));
-		btnUsuario.setBounds(10, 11, 64, 64);
-		contentPane.add(btnUsuario);
-		
-		btnUsuario.addActionListener(new ActionListener() {
+		btnCadastraUsuarios = new JButton("");	
+		btnCadastraUsuarios.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				TelaUsuariosCad usuarios = new TelaUsuariosCad();
-				usuarios.setLocationRelativeTo(null);
-				usuarios.setVisible(true);
+				TelaCadastro cadastro;
+				try {
+					cadastro = new TelaCadastro();
+					cadastro.setLocationRelativeTo(null);
+					cadastro.setVisible(true);
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
 			}
 		});
+			
+		btnCadastraUsuarios.setBorder(null);
+		btnCadastraUsuarios.setToolTipText("Cadastro de Funcion\u00E1rios");
+		btnCadastraUsuarios.setBackground(Color.WHITE);
+		btnCadastraUsuarios.setIcon(new ImageIcon(TelaInicial.class.getResource("/img/adicionar-usuario.png")));
+		btnCadastraUsuarios.setBounds(10, 11, 64, 64);
+		contentPane.add(btnCadastraUsuarios);
 		
 		
 		btnRegistrarPonto = new JButton("");
+		btnRegistrarPonto.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				TelaListaUsuarios usuarios = new TelaListaUsuarios();
+				usuarios.setLocationRelativeTo(null);
+				usuarios.setVisible(true);
+				
+			}
+		});
 		btnRegistrarPonto.setBorder(null);
 		btnRegistrarPonto.setBackground(Color.WHITE);
 		btnRegistrarPonto.setIcon(new ImageIcon(TelaInicial.class.getResource("/img/calendario.png")));
 		btnRegistrarPonto.setBounds(158, 11, 64, 64);
 		contentPane.add(btnRegistrarPonto);
 		
-		btnRegistrarPonto.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				TelaRegPonto ponto = new TelaRegPonto();
-				ponto.setLocationRelativeTo(null);
-				ponto.setVisible(true);
-			}
-		});
+		
 		
 		
 		lblFundo = new JLabel("");

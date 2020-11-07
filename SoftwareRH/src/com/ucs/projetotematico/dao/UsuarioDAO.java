@@ -4,11 +4,11 @@ import java.util.List;
 
 import com.ucs.projetotematico.model.Usuario;
 
+
 public interface UsuarioDAO {
 	
-	//List<Usuario> buscaTodos();
-	 List<Usuario> buscaTodos(Usuario usuario);
-	//Usuario buscaTodos (Usuario usuario);
+	
+	List<Usuario> buscaTodos() ;	
 	Usuario buscaPorCodigo(int id_usuario);
 	void salvar(Usuario usuario);
 	void deletar(Usuario usuario);

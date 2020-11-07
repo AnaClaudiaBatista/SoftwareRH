@@ -15,51 +15,48 @@ import com.ucs.projetotematico.dao.UsuarioDAO;
 import com.ucs.projetotematico.model.Endereco;
 import com.ucs.projetotematico.model.Usuario;
 
-public class PostgresqlUsuarioDAO implements UsuarioDAO {
-	// SimpleDateFormat formatarData = new SimpleDateFormat("yyyy-MM-dd");
+
 	
-	/*Usuario conex = new Usuario();	
-	TelaUsuarioCad usuario = new TelaUsuarioCad();*/
+public class PostgresqlUsuarioDAO implements UsuarioDAO {
+	
 	private Connection conn;
 	
-	public PostgresqlUsuarioDAO (Connection conn) { // recebe a conexão e manipula ela por aqui
+	PostgresqlUsuarioDAO (Connection conn) { // recebe a conexão e manipula ela por aqui
 		this.conn = conn;
 	}
 
-	@Override
+		
 	// metodo que consulta e lista os produtos do banco
-		public List<Usuario> buscaTodos(Usuario usuario) { // criar um statment e buscar um dado		
-			
+		public List<Usuario> buscaTodos() { 	
+			List<Usuario> usuarios = new ArrayList<Usuario>();
+
 			
 			 Statement stmt = null;
 			 ResultSet rs = null;
-	//		 List<Usuario> usuarios = new ArrayList<Usuario>();
-	           
+		           
 	try {		
 				
 	stmt = conn.createStatement(rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY); // cria comando que manda informacao para o banco							
-	rs = stmt.executeQuery("select baseusuario.id_usuario, baseusuario.des_nome, baseusuario.dta_admissao,baseusuario.num_cpf,"
-						+ "endereco.des_rua, endereco.numero, endereco.des_bairro  "
-						+ "from baseusuario left join endereco on endereco.id_endereco = baseusuario.id_endereco "
-						+ "where baseusuario.des_nome like '%" + usuario.getPesquisa()+"%'");// rs recebe o resultado do select
-				//	rs.first();
-	List<Usuario> listaUsuario = new ArrayList<>();
-	
-	
+	rs = stmt.executeQuery("select baseusuario.id_usuario, baseusuario.des_nome,baseusuario.dta_admissao, "
+						+ "baseusuario.num_cpf,endereco.des_rua, endereco.numero, endereco.des_bairro  "
+						+ "from baseusuario "
+						+ "left join endereco on endereco.id_endereco = baseusuario.id_endereco ");// rs recebe o resultado do select
+					rs.first();
+		
 				while (rs.next()) { // laco pega as informacoes da tabela baseusuario e adiciona no array usuario
-					Usuario usuarios = new Usuario(); 				
-					usuarios.setId_usuario(rs.getInt("id_usuario"));
-					usuarios.setNome(rs.getString("des_nome"));
-					usuarios.setData_admissao(rs.getDate("data_admissao"));
-					usuarios.setCpf(rs.getString("num_cpf"));
+					Usuario usuario = new Usuario(); 				
+					usuario.setId_usuario(rs.getInt("id_usuario"));
+					usuario.setNome(rs.getString("des_nome"));
+					usuario.setData_admissao(rs.getDate("dta_admissao"));
+					usuario.setCpf(rs.getString("num_cpf"));
 					
 					Endereco endereco = new Endereco();
 					endereco.setDes_rua(rs.getString("des_rua"));
 					endereco.setNumero(rs.getInt("numero"));
 					endereco.setDes_bairro(rs.getString("des_bairro"));
 					
-					usuarios.setEndereco(endereco);
-					listaUsuario.add(usuarios);
+					usuario.setEndereco(endereco);
+					usuarios.add(usuario);
 													
 				}		
 			} 
@@ -77,7 +74,7 @@ public class PostgresqlUsuarioDAO implements UsuarioDAO {
 				}
 			}
 			// return usuario;
-			return null;
+			return usuarios;
 		}
 	
 	
@@ -226,6 +223,9 @@ public void alterar(Usuario usuario) {
 	
 	
 }
+
+
+
 
 
 	
