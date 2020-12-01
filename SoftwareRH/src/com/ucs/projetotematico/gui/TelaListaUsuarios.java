@@ -5,6 +5,8 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +15,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -22,12 +23,12 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 
 import com.ucs.projetotematico.dao.DAOFactory;
 import com.ucs.projetotematico.dao.UsuarioDAO;
 import com.ucs.projetotematico.dao.postgresql.PostgresqlDAOFactory;
 import com.ucs.projetotematico.model.Usuario;
-import javax.swing.table.DefaultTableModel;
 
 
 public class TelaListaUsuarios extends JFrame {
@@ -41,6 +42,7 @@ public class TelaListaUsuarios extends JFrame {
 	private JScrollPane scroll;
 	private UsuarioDAO dao;
 	private DAOFactory fabrica;
+	
 	
 
 	/**
@@ -65,6 +67,11 @@ public class TelaListaUsuarios extends JFrame {
 	 * Create the frame.
 	 */
 	public TelaListaUsuarios() {
+		//Conectando ao Banco de dados
+		fabrica = PostgresqlDAOFactory.getInstancia();
+		dao = fabrica.getUsuarioDAO();
+		
+		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(TelaListaUsuarios.class.getResource("/img/icone32.ico")));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 598, 403);
@@ -73,7 +80,54 @@ public class TelaListaUsuarios extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		tabelaUsuarios = new JTable(new UsuarioTableModel());
+		scroll = new JScrollPane();
+		scroll.setBounds(10, 47, 560, 290);
+		contentPane.add(scroll);
+		
+		tabelaUsuarios = new JTable(new DefaultTableModel(
+				new Object[][] {					
+				},
+				new String[] {
+					"Codigo", "Nome", "Admissão", "CPF", "Logradouro", "Numero", "Bairro"	
+				}
+				));	
+		tabelaUsuarios.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// testa se teve duplo clique
+				if(tabelaUsuarios.getSelectedRow() != -1 && e.getClickCount() == 2) { 
+					
+						Usuario usuario = new Usuario();
+						TelaCadastroUsuarios cadastro;
+						try {
+							cadastro = new TelaCadastroUsuarios();
+							String sCodigo = ""+ tabelaUsuarios.getValueAt(tabelaUsuarios.getSelectedRow(),1);
+							int codigo = Integer.parseInt(sCodigo);						
+							Usuario u = dao.buscaPorCodigo(codigo);
+							
+							
+							cadastro.setUsuarios(u);
+							
+							cadastro.setVisible(true); 
+							 dispose(); 
+						} catch (ParseException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						
+						
+						
+						
+									
+					
+					}
+				
+			}
+		});
+		
+		
+		
+		
 		tabelaUsuarios.getSelectionModel().addListSelectionListener(
 				new ListSelectionListener() {
 					@Override
@@ -91,11 +145,10 @@ public class TelaListaUsuarios extends JFrame {
 				});
 		
 		tabelaUsuarios.setBounds(10, 47, 560, 290);
-		contentPane.add(tabelaUsuarios);
+		//contentPane.add(tabelaUsuarios);
+		scroll.setViewportView(tabelaUsuarios);
 		
-		scroll = new JScrollPane();
-		scroll.setBounds(558, 47, 12, 290);
-		contentPane.add(scroll);
+		
 		
 		
 		lblCodigo = new JLabel("C\u00F3digo");
@@ -236,9 +289,9 @@ public class TelaListaUsuarios extends JFrame {
 		btnNovo = new JButton("Novo");
 		btnNovo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				TelaCadastro cadastro;
+				TelaCadastroUsuarios cadastro;
 				try {
-					cadastro = new TelaCadastro();
+					cadastro = new TelaCadastroUsuarios();
 					cadastro.setLocationRelativeTo(null);
 					cadastro.setVisible(true);
 				} catch (ParseException e1) {
@@ -262,10 +315,7 @@ public class TelaListaUsuarios extends JFrame {
 		
 		
 		
-		//Conectando ao Banco de dados
-		fabrica = PostgresqlDAOFactory.getInstancia();
-		dao = fabrica.getUsuarioDAO();
-		
+	
 		
 	}
 }

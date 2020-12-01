@@ -18,7 +18,7 @@ public abstract class DAOFactory {
 	public abstract void closeConnection(); 	
 	
 	public abstract UsuarioDAO getUsuarioDAO();
-	//public abstract PessoaDAO getPessoaDAO(); // outra classe(tabela)
+	public abstract PontoDAO getPontoDAO(); // outra classe(tabela)
 
 	
 

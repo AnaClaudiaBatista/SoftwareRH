@@ -29,9 +29,10 @@ import javax.swing.text.MaskFormatter;
 import com.ucs.projetotematico.dao.DAOFactory;
 import com.ucs.projetotematico.dao.UsuarioDAO;
 import com.ucs.projetotematico.dao.postgresql.PostgresqlDAOFactory;
+import com.ucs.projetotematico.model.Endereco;
 import com.ucs.projetotematico.model.Usuario;
 
-public class TelaCadastro extends JFrame implements ActionListener {
+public class TelaCadastroEndereco extends JFrame {
 
 	private JPanel contentPane, panelCadastro, panelCPFeRG, panelEndereco;
 	private JTextField txtNome, txtEmail, txtRG, txtRua, txtBairro, txtCEP, txtCidade, txtCodigo;
@@ -42,6 +43,8 @@ public class TelaCadastro extends JFrame implements ActionListener {
     private MaskFormatter mascaraAdmissao, mascaraTelefone, mascaraDtNascimento, mascaraCPF = null;
 	private UsuarioDAO dao;
 	private DAOFactory fabrica;	
+	SimpleDateFormat dataFormatada = new SimpleDateFormat("dd/MM/yyyy");
+	private JTextField txtNumero;
 	
 
 	/**
@@ -51,7 +54,7 @@ public class TelaCadastro extends JFrame implements ActionListener {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					TelaCadastro frame = new TelaCadastro();
+					TelaCadastroEndereco frame = new TelaCadastroEndereco();
 					frame.setLocationRelativeTo(null);
 					frame.setVisible(true);
 					
@@ -65,7 +68,7 @@ public class TelaCadastro extends JFrame implements ActionListener {
 	/**
 	 * Create the frame.
 	 */
-	public TelaCadastro() throws ParseException {		
+	public TelaCadastroEndereco() throws ParseException {		
 		//Conectando ao Banco de dados
 		fabrica = PostgresqlDAOFactory.getInstancia();
 		dao = fabrica.getUsuarioDAO();
@@ -73,7 +76,7 @@ public class TelaCadastro extends JFrame implements ActionListener {
 	
 		
 		setTitle("Cadastro de Usu\u00E1rios");
-		setIconImage(Toolkit.getDefaultToolkit().getImage(TelaCadastro.class.getResource("/img/icone32.ico")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(TelaCadastroEndereco.class.getResource("/img/icone32.ico")));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 569, 400);
 		contentPane = new JPanel();
@@ -242,6 +245,16 @@ public class TelaCadastro extends JFrame implements ActionListener {
 		comboEstado.setBounds(214, 66, 54, 20);
 		panelEndereco.add(comboEstado);
 		
+		JLabel lblNumero = new JLabel("Numero");
+		lblNumero.setFont(new Font("Arial", Font.PLAIN, 9));
+		lblNumero.setBounds(276, 50, 46, 14);
+		panelEndereco.add(lblNumero);
+		
+		txtNumero = new JTextField();
+		txtNumero.setBounds(276, 66, 54, 20);
+		panelEndereco.add(txtNumero);
+		txtNumero.setColumns(10);
+		
 		
 		lblDataDeAdmissao = new JLabel("Data de Admiss\u00E3o:");
 		lblDataDeAdmissao.setFont(new Font("Arial", Font.PLAIN, 9));
@@ -279,14 +292,14 @@ public class TelaCadastro extends JFrame implements ActionListener {
 		
 		btnEditar.setBackground(SystemColor.menu);
 		btnEditar.setBorder(null);
-		btnEditar.setIcon(new ImageIcon(TelaCadastro.class.getResource("/img/IconBotaoEditar.ico")));
+		btnEditar.setIcon(new ImageIcon(TelaCadastroEndereco.class.getResource("/img/IconBotaoEditar.ico")));
 		btnEditar.setBounds(411, 318, 32, 32);
 		contentPane.add(btnEditar);
 		
 		btnExcluir = new JButton("");
 		btnExcluir.setBackground(SystemColor.menu);
 		btnExcluir.setBorder(null);
-		btnExcluir.setIcon(new ImageIcon(TelaCadastro.class.getResource("/img/IconBotaoExcluir.ico")));
+		btnExcluir.setIcon(new ImageIcon(TelaCadastroEndereco.class.getResource("/img/IconBotaoExcluir.ico")));
 		btnExcluir.setBounds(453, 318, 32, 32);
 		contentPane.add(btnExcluir);
 		
@@ -295,11 +308,9 @@ public class TelaCadastro extends JFrame implements ActionListener {
 			public void actionPerformed(ActionEvent e) {
 				
 				Usuario usuario = new Usuario();
+				
 				usuario.setNome(txtNome.getText()); 
-				
-				// para formatar a data em formato brasileiro
-				SimpleDateFormat dataFormatada = new SimpleDateFormat("dd/MM/yyyy");
-				
+								
 				// esse para salvar, o parse converte o campo de scrig para date, 
 				// vai pegar o formato brasileiro  e converter para o estrangeiro
 				try {	
@@ -316,35 +327,55 @@ public class TelaCadastro extends JFrame implements ActionListener {
 				usuario.setTelefone(txtFone.getText());
 				usuario.setEmail(txtEmail.getText());
 				usuario.setCpf(txtCPF.getText());
-				usuario.setRg(txtRG.getText());					
+				usuario.setRg(txtRG.getText());	
+				
+				/*Endereco endereco = new Endereco();
+				endereco.setDes_rua(txtRua.getText());
+				endereco.setNumero(Integer.parseInt(txtNumero.getText()));
+				endereco.setCep(Integer.parseInt(txtCEP.getText()));
+				endereco.setDes_bairro(txtBairro.getText());
+				endereco.setDes_cidade(txtCidade.getText());				
+				endereco.setDes_sigla((String) comboEstado.getSelectedItem());
+				
+			*/
 				dao.salvar(usuario);	
 				
 			}
 		});
 		btnSalvar.setBackground(SystemColor.menu);
 		btnSalvar.setBorder(null);
-		btnSalvar.setIcon(new ImageIcon(TelaCadastro.class.getResource("/img/IconBotaoSalvar.ico")));
+		btnSalvar.setIcon(new ImageIcon(TelaCadastroEndereco.class.getResource("/img/IconBotaoSalvar.ico")));
 		btnSalvar.setBounds(495, 318, 32, 32);
 		contentPane.add(btnSalvar);
 		
 		lblFundo = new JLabel("");
-		lblFundo.setIcon(new ImageIcon(TelaCadastro.class.getResource("/img/fundo2.jpg")));
+		lblFundo.setIcon(new ImageIcon(TelaCadastroEndereco.class.getResource("/img/fundo2.jpg")));
 		lblFundo.setBounds(0, 0, 570, 377);
 		contentPane.add(lblFundo);	
 		
 		
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
 	
+	
+	public void setUsuarios(Usuario usuario) { 
+		//Usuario usuario = new Usuario();
+		txtCodigo.setText(new Integer(usuario.getId_usuario()).toString());			
+		txtNome.setText(usuario.getNome()); 
+		txtCPF.setText(usuario.getCpf());
+		txtRG.setText(usuario.getRg());
+		txtAdmissao.setText(dataFormatada.format(usuario.getData_admissao()));
+		txtDtNascimento.setText(dataFormatada.format(usuario.getData_nascimento()));
+		txtEmail.setText(usuario.getEmail());
+		txtFone.setText(usuario.getTelefone());
+		txtRua.setText(usuario.getEndereco().getDes_rua());
+		txtBairro.setText(usuario.getEndereco().getDes_bairro());
+		txtCEP.setText(new Integer(usuario.getEndereco().getCep()).toString());
+		txtCidade.setText(new Integer(usuario.getEndereco().getId_cidade()).toString());
+		 }
 }
 	
-	
-	
+
 	
 		
 		

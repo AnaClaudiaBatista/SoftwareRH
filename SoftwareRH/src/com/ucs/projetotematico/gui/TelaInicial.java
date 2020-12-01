@@ -107,9 +107,9 @@ public class TelaInicial extends JFrame {
 		btnCadastraUsuarios = new JButton("");	
 		btnCadastraUsuarios.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				TelaCadastro cadastro;
+				TelaCadastroUsuarios cadastro;
 				try {
-					cadastro = new TelaCadastro();
+					cadastro = new TelaCadastroUsuarios();
 					cadastro.setLocationRelativeTo(null);
 					cadastro.setVisible(true);
 				} catch (ParseException e1) {

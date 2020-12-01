@@ -25,13 +25,13 @@ public class Usuario implements Serializable{
 	private String email;
 	private String natural;
 	private Date data_admissao;
-	private String pesquisa;
+	private String senha;
 	
 	
 	public Usuario(){}
 	
 	public Usuario(int id_empresa, int id_usuario, String nome, boolean status, String cpf, String rg, Date data_nascimento, int endereco, String telefone, 
-			String email, String natural, Date data_admissao) {
+			String email, String natural, Date data_admissao, String senha) {
 		super();
 		
 		this.id_empresa = id_empresa;
@@ -46,6 +46,7 @@ public class Usuario implements Serializable{
 		this.email = email;
 		this.natural = natural;
 		this.data_admissao = data_admissao;
+		this.senha = senha;
 	}
 	/**
 	 * Obtém o codigo do produto
@@ -183,19 +184,23 @@ public class Usuario implements Serializable{
 		this.data_admissao = data_admissao;
 	}
 
-	public String getPesquisa() {
-		return pesquisa;
+	
+	public String getSenha() {
+		return senha;
 	}
 
-	public void setPesquisa(String pesquisa) {
-		this.pesquisa = pesquisa;
-	}
+
+
+	public void setSenha(String senha) {
+		this.senha = senha;
+	}	
+	
 
 	@Override
 	public String toString() {
 		return "Usuario [id_empresa=" + id_empresa + ", id_usuario=" + id_usuario + ", nome=" + nome + ", status=" + status
 				+ ", cpf=" + cpf + ", rg=" + rg + ", data_nascimento=" + data_nascimento + ", endereco=" + endereco
-				+ ", telefone=" + telefone + ", email=" + email + ", natural=" + natural + ", data_admissao="
+				+ ", telefone=" + telefone + ", email=" + email + ", natural=" + natural + ", senha=" + senha + "data_admissao="
 				+ data_admissao + "]";
 	}
 

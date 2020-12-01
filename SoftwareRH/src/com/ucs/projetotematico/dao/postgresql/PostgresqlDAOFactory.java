@@ -9,6 +9,7 @@ import java.sql.Statement;
 import javax.swing.JOptionPane;
 
 import com.ucs.projetotematico.dao.DAOFactory;
+import com.ucs.projetotematico.dao.PontoDAO;
 import com.ucs.projetotematico.dao.UsuarioDAO;
 
 public class PostgresqlDAOFactory extends DAOFactory {
@@ -75,6 +76,14 @@ public class PostgresqlDAOFactory extends DAOFactory {
 		
 		return new PostgresqlUsuarioDAO(conn);
 	}
+
+	@Override
+	public PontoDAO getPontoDAO() {
+		return new PostgresqlPontoDAO(conn);
+
+	}
+
+	
 
 
 	

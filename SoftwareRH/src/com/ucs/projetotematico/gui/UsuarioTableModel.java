@@ -1,9 +1,12 @@
 package com.ucs.projetotematico.gui;
 
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumnModel;
 
 import com.ucs.projetotematico.model.Usuario;
 
@@ -81,5 +84,8 @@ public class UsuarioTableModel extends AbstractTableModel{
 		this.usuarios.add(usuario);
 		this.fireTableDataChanged();
 	}
+	
+	
+	
 
 }

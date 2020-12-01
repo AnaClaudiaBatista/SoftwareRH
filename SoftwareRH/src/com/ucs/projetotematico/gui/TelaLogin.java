@@ -6,6 +6,8 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -22,8 +24,6 @@ import com.ucs.projetotematico.dao.DAOFactory;
 import com.ucs.projetotematico.dao.UsuarioDAO;
 import com.ucs.projetotematico.dao.postgresql.PostgresqlDAOFactory;
 import com.ucs.projetotematico.model.Usuario;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 public class TelaLogin extends JFrame {
 
@@ -32,7 +32,7 @@ public class TelaLogin extends JFrame {
 	private JButton btnAcessar;
 	private JPasswordField txtSenha;
 	private JLabel lblIdentificacaodeUsuario, img,lblFundo;	
-	private UsuarioDAO dao;
+	private UsuarioDAO usuarioDAO;
 	private DAOFactory fabrica;	
 
 
@@ -61,8 +61,9 @@ public class TelaLogin extends JFrame {
 		
 		//Conectando ao Banco de dados
 		fabrica = PostgresqlDAOFactory.getInstancia();
-		dao = fabrica.getUsuarioDAO();
+		usuarioDAO = fabrica.getUsuarioDAO();
 		
+
 		setIconImage(Toolkit.getDefaultToolkit().getImage(TelaLogin.class.getResource("/img/icone32.ico")));
 		setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -80,6 +81,30 @@ public class TelaLogin extends JFrame {
 		
 		
 		btnAcessar = new JButton("Acessar");
+		btnAcessar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				String sCodigo = txtLogin.getText();		
+				int codigo = Integer.parseInt(sCodigo);
+				Usuario u = usuarioDAO.buscaSenha(codigo);	
+				
+//new Integer(u.getId_usuario()).toString()
+				if ((txtLogin.getText().equals(u.getId_usuario())) && (txtSenha.getText().equals(u.getSenha()))) {
+					TelaInicial inicio = new TelaInicial ();
+		               inicio.setVisible(true);
+		               inicio.setLocationRelativeTo(null);
+		               
+		               dispose(); 
+
+				}
+				else {
+					JOptionPane.showMessageDialog(rootPane, "Usuário/Senha Icorretos");	
+				}		     
+				
+				
+			}
+			
+		});
 		btnAcessar.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		btnAcessar.setIcon(new ImageIcon(TelaLogin.class.getResource("/img/btnAcessar.png")));	
 		btnAcessar.setBounds(162, 203, 105, 29);
@@ -102,23 +127,23 @@ public class TelaLogin extends JFrame {
 		
 		
 		
-			btnAcessar.addActionListener(new ActionListener() {
+			/*btnAcessar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
 					 if (txtLogin.getText().equals("usuario") && 
 							 (txtSenha.getText().equals("1234"))) {
-						/*caso usuario e senha estiverem corretos abre a tela inicial*/
+						caso usuario e senha estiverem corretos abre a tela inicial
 						TelaInicial inicio = new TelaInicial ();
 			               inicio.setVisible(true);
 			               inicio.setLocationRelativeTo(null);
 
-			               dispose(); /*fecha tela de login*/	
+			               dispose(); fecha tela de login
 					} else {
 						JOptionPane.showMessageDialog(rootPane, "Usuário/Senha Icorretos");	
 					}				
 				}});
 				
-		     
+		     */
 		
 		
 		

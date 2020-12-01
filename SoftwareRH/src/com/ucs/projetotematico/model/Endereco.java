@@ -20,12 +20,16 @@ public class Endereco implements Serializable{
 	private int cep;
 	private String complemento;
 	private int id_cidade;
-	private String pesquisa;
+	private String des_cidade;
+	private String des_sigla;
+	private String des_estado;
+	
+	
 	
 	
 	public Endereco(){}
 	
-	public Endereco(int id_endereco, String des_rua, String des_bairro, int numero, int cep, String complemento, int id_cidade) {
+	public Endereco(int id_endereco, String des_rua, String des_bairro, int numero, int cep, String complemento, int id_cidade,  String des_cidade, String des_sigla, String des_estado ) {
 		super();
 		
 		this.id_endereco = id_endereco;
@@ -35,6 +39,9 @@ public class Endereco implements Serializable{
 		this.cep = cep;
 		this.complemento = complemento;
 		this.id_cidade = id_cidade;
+		this.des_cidade = des_cidade;
+		this.des_sigla = des_sigla;
+		this.des_estado = des_estado;
 		
 		
 	}
@@ -99,12 +106,29 @@ public class Endereco implements Serializable{
 		this.id_cidade = id_cidade;
 	}
 
-	public String getPesquisa() {
-		return pesquisa;
+	
+	public String getDes_cidade() {
+		return des_cidade;
 	}
 
-	public void setPesquisa(String pesquisa) {
-		this.pesquisa = pesquisa;
+	public void setDes_cidade(String des_cidade) {
+		this.des_cidade = des_cidade;
+	}
+
+	public String getDes_sigla() {
+		return des_sigla;
+	}
+
+	public void setDes_sigla(String des_sigla) {
+		this.des_sigla = des_sigla;
+	}
+
+	public String getDes_estado() {
+		return des_estado;
+	}
+
+	public void setDes_estado(String des_estado) {
+		this.des_estado = des_estado;
 	}
 
 	@Override
@@ -114,11 +138,13 @@ public class Endereco implements Serializable{
 		result = prime * result + cep;
 		result = prime * result + ((complemento == null) ? 0 : complemento.hashCode());
 		result = prime * result + ((des_bairro == null) ? 0 : des_bairro.hashCode());
+		result = prime * result + ((des_cidade == null) ? 0 : des_cidade.hashCode());
+		result = prime * result + ((des_estado == null) ? 0 : des_estado.hashCode());
 		result = prime * result + ((des_rua == null) ? 0 : des_rua.hashCode());
+		result = prime * result + ((des_sigla == null) ? 0 : des_sigla.hashCode());
 		result = prime * result + id_cidade;
 		result = prime * result + id_endereco;
 		result = prime * result + numero;
-		result = prime * result + ((pesquisa == null) ? 0 : pesquisa.hashCode());
 		return result;
 	}
 
@@ -143,21 +169,31 @@ public class Endereco implements Serializable{
 				return false;
 		} else if (!des_bairro.equals(other.des_bairro))
 			return false;
+		if (des_cidade == null) {
+			if (other.des_cidade != null)
+				return false;
+		} else if (!des_cidade.equals(other.des_cidade))
+			return false;
+		if (des_estado == null) {
+			if (other.des_estado != null)
+				return false;
+		} else if (!des_estado.equals(other.des_estado))
+			return false;
 		if (des_rua == null) {
 			if (other.des_rua != null)
 				return false;
 		} else if (!des_rua.equals(other.des_rua))
+			return false;
+		if (des_sigla == null) {
+			if (other.des_sigla != null)
+				return false;
+		} else if (!des_sigla.equals(other.des_sigla))
 			return false;
 		if (id_cidade != other.id_cidade)
 			return false;
 		if (id_endereco != other.id_endereco)
 			return false;
 		if (numero != other.numero)
-			return false;
-		if (pesquisa == null) {
-			if (other.pesquisa != null)
-				return false;
-		} else if (!pesquisa.equals(other.pesquisa))
 			return false;
 		return true;
 	}
