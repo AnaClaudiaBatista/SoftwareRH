@@ -9,7 +9,7 @@ import com.ucs.projetotematico.model.Ponto;
 
 public class PontoTableModel extends AbstractTableModel{
 	private List<Ponto> ponto;
-	private static final String nomes[] = {"Data", "Entrada", "Saída", "Entrada", "Saída"};
+	private static final String nomes[] = {"Matricula","Data", "Entrada", "Saída", "Entrada", "Saída"};
 	
 	private ArrayList linhas = null;
 	private String[] colunas = null;
@@ -26,7 +26,7 @@ public class PontoTableModel extends AbstractTableModel{
 		return ponto;
 	}
 
-	public void setUsuarios(List<Ponto> ponto) {
+	public void setPonto(List<Ponto> ponto) {
 		this.ponto = ponto;
 	}
 	
@@ -45,7 +45,7 @@ public class PontoTableModel extends AbstractTableModel{
 
 	@Override
 	public int getColumnCount() {
-		return 5;
+		return 6;
 	}
 
 	@Override

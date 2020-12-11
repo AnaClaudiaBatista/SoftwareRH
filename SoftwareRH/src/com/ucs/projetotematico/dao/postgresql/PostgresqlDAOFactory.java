@@ -1,18 +1,17 @@
+
 package com.ucs.projetotematico.dao.postgresql;
 
+import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-
-import javax.swing.JOptionPane;
 
 import com.ucs.projetotematico.dao.DAOFactory;
 import com.ucs.projetotematico.dao.PontoDAO;
 import com.ucs.projetotematico.dao.UsuarioDAO;
 
 public class PostgresqlDAOFactory extends DAOFactory {
+	
+	public static Connection conn; // tirar
 	
 	public static DAOFactory getInstancia() {
 
@@ -29,7 +28,8 @@ public class PostgresqlDAOFactory extends DAOFactory {
 	
 	
 
-   private void openConnection () {
+  // private void openConnection () {
+	public static Connection openConnection() {
 	  	   
 		String driver = "org.postgresql.Driver";
 		String url = "jdbc:postgresql://motty.db.elephantsql.com:5432/qjjczihh";
@@ -38,12 +38,15 @@ public class PostgresqlDAOFactory extends DAOFactory {
 		
 		try {
 		Class.forName(driver); // instancia o driver
-		this.conn = DriverManager.getConnection(url, user, senha); 
+		//this.conn = DriverManager.getConnection(url, user, senha); 
+		conn = DriverManager.getConnection(url, user, senha); 
 		}catch (ClassNotFoundException cnfe) {
 			System.out.println("Diver n√o encontrado");
 		}catch (SQLException se) {
 			System.out.println("Falha na conex„o" + se.getMessage());
 		}
+		
+		return conn;//irar
 				
    }
    
@@ -82,6 +85,7 @@ public class PostgresqlDAOFactory extends DAOFactory {
 		return new PostgresqlPontoDAO(conn);
 
 	}
+	
 
 	
 
@@ -89,3 +93,4 @@ public class PostgresqlDAOFactory extends DAOFactory {
 	
 	
 }
+

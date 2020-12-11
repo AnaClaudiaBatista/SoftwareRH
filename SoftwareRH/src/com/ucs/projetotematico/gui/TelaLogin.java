@@ -83,27 +83,27 @@ public class TelaLogin extends JFrame {
 		btnAcessar = new JButton("Acessar");
 		btnAcessar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				String sCodigo = txtLogin.getText();		
-				int codigo = Integer.parseInt(sCodigo);
-				Usuario u = usuarioDAO.buscaSenha(codigo);	
-				
-//new Integer(u.getId_usuario()).toString()
-				if ((txtLogin.getText().equals(u.getId_usuario())) && (txtSenha.getText().equals(u.getSenha()))) {
+				String senha = txtSenha.getText();
+				String sUser = txtLogin.getText();		
+				int user = Integer.parseInt(sUser);
+				Usuario u = usuarioDAO.buscaSenha(user);	
+				if(u.getId_usuario() == user) {
+				//txtCodigoMat.setText(new Integer(u.getId_usuario()).toString());
+				//txtNome.setText(u.getNome());
+					//caso usuario e senha estiverem corretos abre a tela inicial
 					TelaInicial inicio = new TelaInicial ();
 		               inicio.setVisible(true);
 		               inicio.setLocationRelativeTo(null);
-		               
-		               dispose(); 
 
+		               dispose(); //fecha tela de login
 				}
-				else {
-					JOptionPane.showMessageDialog(rootPane, "Usuário/Senha Icorretos");	
-				}		     
-				
-				
+				else
+					JOptionPane.showMessageDialog(null, "Usuário/Senha Icorretos");	
 			}
+				
 			
+			
+				
 		});
 		btnAcessar.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		btnAcessar.setIcon(new ImageIcon(TelaLogin.class.getResource("/img/btnAcessar.png")));	

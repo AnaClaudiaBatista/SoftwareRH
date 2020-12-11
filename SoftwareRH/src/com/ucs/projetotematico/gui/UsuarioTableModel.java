@@ -13,7 +13,7 @@ import com.ucs.projetotematico.model.Usuario;
 
 public class UsuarioTableModel extends AbstractTableModel{
 	private List<Usuario> usuarios;
-	private static final String nomes[] = {"Codigo", "Nome", "Admissao", "CPF", "Logradouro", "Numero", "Bairro"};
+	private static final String nomes[] = {"Codigo", "Nome", "CPF", "Logradouro", "Numero", "Bairro", "Setor"};
 	
 	private ArrayList linhas = null;
 	private String[] colunas = null;
@@ -63,15 +63,15 @@ public class UsuarioTableModel extends AbstractTableModel{
 		case 1:
 			return usuario.getNome();
 		case 2:
-			return usuario.getData_admissao();
-		case 3:
 			return usuario.getCpf();
+		case 3:
+			return usuario.getDes_rua();
 		case 4:
-			return usuario.getEndereco().getDes_rua();
+			return usuario.getNumero();
 		case 5:
-			return usuario.getEndereco().getNumero();
+			return usuario.getDes_bairro();
 		case 6:
-			return usuario.getEndereco().getDes_bairro();
+			return usuario.getDes_setor();
 			}
 		return null;
 	}

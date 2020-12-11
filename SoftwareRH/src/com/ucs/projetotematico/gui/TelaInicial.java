@@ -16,22 +16,29 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.border.EmptyBorder;
 
 import com.ucs.projetotematico.dao.DAOFactory;
 import com.ucs.projetotematico.dao.UsuarioDAO;
 import com.ucs.projetotematico.dao.postgresql.PostgresqlDAOFactory;
-
+import java.awt.SystemColor;
+import javax.swing.SwingConstants;
+import java.awt.Font;
+ 
 public class TelaInicial extends JFrame {
 
 	private JPanel contentPane;
 	private JMenuBar menuBar;
-	private JMenu mnCadastros,mnRelatrios, mnPonto, mnSair;	
+	private JMenu mnCadastros, mnPonto, mnSair;	
 	private JMenuItem mntmSair;
-	private JButton btnRelatorio, btnCadastraUsuarios, btnRegistrarPonto;
+	private JButton btnListaCad, btnCadastraUsuarios;
 	private JLabel lblFundo;
 	private UsuarioDAO dao;
 	private DAOFactory fabrica;	
+	private JMenuItem mntmCadastrarPonto;
+	private JMenuItem mntmListarFuncionrios;
+	private JMenuItem mntmListarPonto;
 	
 	/**
 	 * Launch the application.
@@ -60,24 +67,84 @@ public class TelaInicial extends JFrame {
 		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(TelaInicial.class.getResource("/img/icone32.ico")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 598, 367);
+		setBounds(100, 100, 406, 301);
 		
 		menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 		
 		mnCadastros = new JMenu("Cadastros");
+		mnCadastros.setFont(new Font("Arial", Font.PLAIN, 11));
 		menuBar.add(mnCadastros);
 		
-		mnRelatrios = new JMenu("Relat\u00F3rios");
-		menuBar.add(mnRelatrios);		
+		JMenuItem mntmNovoCadastro = new JMenuItem("Novo Cadastro");
+		mntmNovoCadastro.setFont(new Font("Arial", Font.PLAIN, 11));
+		mntmNovoCadastro.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				TelaCadastroUsuarios cadUsuario;
+				try {
+					cadUsuario = new TelaCadastroUsuarios();
+					cadUsuario.setLocationRelativeTo(null);
+					cadUsuario.setVisible(true);
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		mnCadastros.add(mntmNovoCadastro);
+		
+		mntmListarFuncionrios = new JMenuItem("Listar Funcion\u00E1rios");
+		mntmListarFuncionrios.setFont(new Font("Arial", Font.PLAIN, 11));
+		mntmListarFuncionrios.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				TelaListaUsuarios listaUsuario;				
+				listaUsuario = new TelaListaUsuarios();
+				listaUsuario.setLocationRelativeTo(null);
+				listaUsuario.setVisible(true);
+			}
+		});
+		mnCadastros.add(mntmListarFuncionrios);
 		
 		mnPonto = new JMenu("Ponto");
+		mnPonto.setFont(new Font("Arial", Font.PLAIN, 11));
 		menuBar.add(mnPonto);
 		
+		mntmCadastrarPonto = new JMenuItem("Cadastrar Ponto");
+		mntmCadastrarPonto.setFont(new Font("Arial", Font.PLAIN, 11));
+		mntmCadastrarPonto.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				TelaCadastroPonto cadPonto;				
+				try {
+					cadPonto = new TelaCadastroPonto();
+					cadPonto.setLocationRelativeTo(null);
+					cadPonto.setVisible(true);
+			
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		mnPonto.add(mntmCadastrarPonto);
+		
+		mntmListarPonto = new JMenuItem("Listar Ponto");
+		mntmListarPonto.setFont(new Font("Arial", Font.PLAIN, 11));
+		mntmListarPonto.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				TelaListaPonto listaPonto;				
+				listaPonto = new TelaListaPonto();
+				listaPonto.setLocationRelativeTo(null);
+				listaPonto.setVisible(true);
+			}
+		});
+		mnPonto.add(mntmListarPonto);
+		
 		mnSair = new JMenu("Sair do Sistema");	
+		mnSair.setFont(new Font("Arial", Font.PLAIN, 11));
 		menuBar.add(mnSair);
 		
 		mntmSair = new JMenuItem("Sair");
+		mntmSair.setFont(new Font("Arial", Font.PLAIN, 11));
 		mntmSair.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//CAIXA DE DIALOGO CONFIRMANDO SE O USUARIO DESEJA SAIR DO SISTEMA
@@ -96,22 +163,31 @@ public class TelaInicial extends JFrame {
 		setContentPane(contentPane);
 		
 		
-		btnRelatorio = new JButton("");
-		btnRelatorio.setBackground(Color.WHITE);
-		btnRelatorio.setBorder(null);
-		btnRelatorio.setToolTipText("Relat\u00F3rio do Ponto");
-		btnRelatorio.setIcon(new ImageIcon(TelaInicial.class.getResource("/img/lista-de-controle.png")));
-		btnRelatorio.setBounds(84, 11, 64, 64);
-		contentPane.add(btnRelatorio);
+		btnListaCad = new JButton("");
+		btnListaCad.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				TelaListaUsuarios listaUsuario;				
+				listaUsuario = new TelaListaUsuarios();
+				listaUsuario.setLocationRelativeTo(null);
+				listaUsuario.setVisible(true);
+				
+			}
+		});
+		btnListaCad.setBackground(Color.WHITE);
+		btnListaCad.setBorder(null);
+		btnListaCad.setToolTipText("Lista Funcion\u00E1rios");
+		btnListaCad.setIcon(new ImageIcon(TelaInicial.class.getResource("/img/ListaFunc64.ico")));
+		btnListaCad.setBounds(84, 11, 64, 64);
+		contentPane.add(btnListaCad);
 		
 		btnCadastraUsuarios = new JButton("");	
 		btnCadastraUsuarios.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				TelaCadastroUsuarios cadastro;
+				TelaCadastroUsuarios cadUsuario;
 				try {
-					cadastro = new TelaCadastroUsuarios();
-					cadastro.setLocationRelativeTo(null);
-					cadastro.setVisible(true);
+					cadUsuario = new TelaCadastroUsuarios();
+					cadUsuario.setLocationRelativeTo(null);
+					cadUsuario.setVisible(true);
 				} catch (ParseException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -123,25 +199,54 @@ public class TelaInicial extends JFrame {
 		btnCadastraUsuarios.setBorder(null);
 		btnCadastraUsuarios.setToolTipText("Cadastro de Funcion\u00E1rios");
 		btnCadastraUsuarios.setBackground(Color.WHITE);
-		btnCadastraUsuarios.setIcon(new ImageIcon(TelaInicial.class.getResource("/img/adicionar-usuario.png")));
+		btnCadastraUsuarios.setIcon(new ImageIcon(TelaInicial.class.getResource("/img/CadastroFunc64.ico")));
 		btnCadastraUsuarios.setBounds(10, 11, 64, 64);
 		contentPane.add(btnCadastraUsuarios);
 		
+		JSeparator separator = new JSeparator();
+		separator.setBounds(10, 93, 389, 2);
+		contentPane.add(separator);
 		
-		btnRegistrarPonto = new JButton("");
-		btnRegistrarPonto.addActionListener(new ActionListener() {
+		JButton btnCadPonto = new JButton("");
+		btnCadPonto.setBackground(SystemColor.text);
+		btnCadPonto.setBorder(null);
+		btnCadPonto.setToolTipText("Cadastro Ponto");
+		btnCadPonto.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				TelaListaUsuarios usuarios = new TelaListaUsuarios();
-				usuarios.setLocationRelativeTo(null);
-				usuarios.setVisible(true);
+				TelaCadastroPonto cadPonto;				
+					try {
+						cadPonto = new TelaCadastroPonto();
+						cadPonto.setLocationRelativeTo(null);
+						cadPonto.setVisible(true);
+				
+					} catch (ParseException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+			
+			
+		}});
+		btnCadPonto.setIcon(new ImageIcon(TelaInicial.class.getResource("/img/CadastroPonto64.ico")));
+		btnCadPonto.setBounds(10, 103, 64, 64);
+		contentPane.add(btnCadPonto);
+		
+		JButton btnListaPonto = new JButton("");
+		btnListaPonto.setBackground(SystemColor.text);
+		btnListaPonto.setBorder(null);
+		btnListaPonto.setToolTipText("Lista Ponto");
+		btnListaPonto.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				TelaListaPonto listaPonto;				
+				listaPonto = new TelaListaPonto();
+				listaPonto.setLocationRelativeTo(null);
+				listaPonto.setVisible(true);
 				
 			}
 		});
-		btnRegistrarPonto.setBorder(null);
-		btnRegistrarPonto.setBackground(Color.WHITE);
-		btnRegistrarPonto.setIcon(new ImageIcon(TelaInicial.class.getResource("/img/calendario.png")));
-		btnRegistrarPonto.setBounds(158, 11, 64, 64);
-		contentPane.add(btnRegistrarPonto);
+		btnListaPonto.setIcon(new ImageIcon(TelaInicial.class.getResource("/img/ListaPonto64.ico")));
+		btnListaPonto.setBounds(82, 103, 64, 64);
+		contentPane.add(btnListaPonto);
 		
 		
 		
@@ -150,7 +255,7 @@ public class TelaInicial extends JFrame {
 		lblFundo.setBackground(Color.WHITE);
 		lblFundo.setToolTipText("Cadastro de Funcion\u00E1rios");
 		lblFundo.setIcon(new ImageIcon(TelaInicial.class.getResource("/img/fundo2.jpg")));
-		lblFundo.setBounds(-15, 0, 612, 317);
+		lblFundo.setBounds(-15, 0, 412, 246);
 		contentPane.add(lblFundo);
 	}
 }
